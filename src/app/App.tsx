@@ -865,9 +865,13 @@ function HeroSection({ isDark }: { isDark: boolean }) {
           </div>
 
           {/* Right: illustration */}
-          <div style={{ display: "flex", justifyContent: "center", animation: "slideUp .9s ease .15s both" }}>
-            <HeroIllustration />
-          </div>
+         <div
+  style={{
+    display: "none"
+  }}
+>
+  <HeroIllustration />
+</div>
         </div>
       </div>
 
