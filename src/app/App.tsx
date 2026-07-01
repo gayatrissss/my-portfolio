@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next"
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Github, Linkedin, Mail, ExternalLink, Menu, X, ArrowUp,FolderKanban, Award,
