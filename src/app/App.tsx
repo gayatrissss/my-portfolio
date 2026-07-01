@@ -181,6 +181,23 @@ const GLOBAL_CSS = `
     .why-grid{ grid-template-columns:1fr !important; }
     .skills-grid{ grid-template-columns:1fr !important; }
   }
+    .show-mobile{
+  display:none;
+}
+
+@media (max-width:768px){
+
+  .show-mobile{
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .hide-mobile{
+    display:none !important;
+  }
+
+}
 `;
 
 // ─── Loading Screen ──────────────────────────────────────────────────────────
@@ -402,7 +419,14 @@ function Navbar({ isDark, setIsDark }: { isDark: boolean; setIsDark: (v: boolean
           </div>
 
           {/* ACTIONS */}
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    flexShrink: 0,
+  }}
+>
             {/* Resume */}
             <button
               className="hide-mobile btnp"
@@ -446,6 +470,7 @@ function Navbar({ isDark, setIsDark }: { isDark: boolean; setIsDark: (v: boolean
 
             {/* Mobile menu */}
             <button
+             className="show-mobile"
               onClick={() => setMenuOpen(!menuOpen)}
               style={{
                 width: 38,
