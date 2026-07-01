@@ -1,4 +1,4 @@
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Github, Linkedin, Mail, ExternalLink, Menu, X, ArrowUp,FolderKanban, Award,
@@ -3017,6 +3017,7 @@ export default function App() {
           <ContactSection isDark={isDark} />
           <Footer isDark={isDark} />
           <BackToTop isDark={isDark} />
+          <Analytics />
         </>
       )}
     </div>
