@@ -335,31 +335,31 @@ function Navbar({ isDark, setIsDark }: { isDark: boolean; setIsDark: (v: boolean
   return (
     <>
       {/* NAVBAR */}
-   <nav
+ <nav
   style={{
     position: "fixed",
     top: 0,
     left: 0,
+    right: 0,
     width: "100%",
-    height: 70,
+    maxWidth: "100vw",
+    boxSizing: "border-box",
+    height: "70px",
     zIndex: 99999,
-    background: navBg,
-    backdropFilter: scrolled ? "blur(20px)" : "none",
-    WebkitBackdropFilter: scrolled ? "blur(20px)" : "none",
-    borderBottom: `1px solid ${borderColor}`,
-    transition: "all .3s ease",
+    overflow: "hidden",
   }}
 >
-     <div
+ <div
   style={{
     width: "100%",
-    maxWidth: 1200,
+    maxWidth: "1200px",
     margin: "0 auto",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    height: 70,
     padding: "0 12px",
+    boxSizing: "border-box",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "100%",
   }}
 >
           {/* LOGO */}
