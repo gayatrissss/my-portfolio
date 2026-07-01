@@ -258,119 +258,249 @@ function Navbar({ isDark, setIsDark }: { isDark: boolean; setIsDark: (v: boolean
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("Home");
 
+  // ─── scroll background
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
+
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // ─── manual scroll spy (SAFE - no IntersectionObserver errors)
+  useEffect(() => {
+    const handleScrollSpy = () => {
+      const sections = NAV_LINKS.map((l) =>
+        document.getElementById(l.toLowerCase())
+      );
+
+      let current = "Home";
+
+      sections.forEach((section, index) => {
+        if (!section) return;
+
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 120) {
+          current = NAV_LINKS[index];
+        }
+      });
+
+      setActive(current);
+    };
+
+    window.addEventListener("scroll", handleScrollSpy);
+    return () => window.removeEventListener("scroll", handleScrollSpy);
+  }, []);
+
   const scrollTo = (id: string) => {
-    document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
-    setActive(id);
+    document
+      .getElementById(id.toLowerCase())
+      ?.scrollIntoView({ behavior: "smooth" });
+
     setMenuOpen(false);
   };
 
   const navBg = scrolled
-    ? (isDark ? "rgba(9,9,11,.9)" : "rgba(248,250,252,.9)")
+    ? isDark
+      ? "rgba(9,9,11,.9)"
+      : "rgba(248,250,252,.9)"
     : "transparent";
+
   const textColor = isDark ? "#f1f5f9" : "#0f172a";
-  const borderColor = scrolled ? (isDark ? "rgba(255,255,255,.08)" : "rgba(0,0,0,.08)") : "transparent";
+
+  const borderColor = scrolled
+    ? isDark
+      ? "rgba(255,255,255,.08)"
+      : "rgba(0,0,0,.08)"
+    : "transparent";
 
   return (
     <>
-      <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
-        background: navBg, backdropFilter: scrolled ? "blur(20px) saturate(180%)" : "none",
-        borderBottom: `1px solid ${borderColor}`,
-        transition: "all .35s ease", padding: "0 24px"
-      }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 70 }}>
-          {/* Logo */}
-          <button onClick={() => scrollTo("home")} style={{
-            width: 42, height: 42, borderRadius: 11,
-            background: "linear-gradient(135deg,#4F8CFF,#8B5CF6)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontFamily: "'Poppins',sans-serif", fontWeight: 800, fontSize: 15, color: "#fff",
-            border: "none", cursor: "pointer", boxShadow: "0 0 20px rgba(79,140,255,.3)"
-          }}>GS</button>
+      {/* NAVBAR */}
+   <nav
+  style={{
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: 70,
+    zIndex: 99999,
+    background: navBg,
+    backdropFilter: scrolled ? "blur(20px)" : "none",
+    WebkitBackdropFilter: scrolled ? "blur(20px)" : "none",
+    borderBottom: `1px solid ${borderColor}`,
+    transition: "all .3s ease",
+  }}
+>
+     <div
+  style={{
+    width: "100%",
+    maxWidth: 1200,
+    margin: "0 auto",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    height: 70,
+    padding: "0 12px",
+  }}
+>
+          {/* LOGO */}
+          <button
+            onClick={() => scrollTo("home")}
+            style={{
+              width: 42,
+              height: 42,
+              borderRadius: 11,
+              background: "linear-gradient(135deg,#4F8CFF,#8B5CF6)",
+              border: "none",
+              cursor: "pointer",
+              color: "#fff",
+              fontWeight: 800,
+            }}
+          >
+            GS
+          </button>
 
-          {/* Desktop links */}
-          <div className="hide-mobile" style={{ display: "flex", alignItems: "center", gap: 32 }}>
-            {NAV_LINKS.map(l => (
-              <button key={l} onClick={() => scrollTo(l.toLowerCase())} className={`nav-link ${active === l ? "active" : ""}`}
+          {/* DESKTOP LINKS */}
+          <div className="hide-mobile" style={{ display: "flex", gap: 28 }}>
+            {NAV_LINKS.map((l) => (
+              <button
+                key={l}
+                onClick={() => scrollTo(l.toLowerCase())}
                 style={{
-                  background: "none", border: "none", cursor: "pointer",
-                  fontSize: 14, fontWeight: 500, color: active === l ? "#4F8CFF" : (isDark ? "rgba(241,245,249,.7)" : "rgba(15,23,42,.7)"),
-                  fontFamily: "'Inter',sans-serif", padding: "4px 0"
-                }}>{l}</button>
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color:
+                    active === l
+                      ? "#4F8CFF"
+                      : isDark
+                      ? "rgba(255,255,255,.7)"
+                      : "rgba(0,0,0,.6)",
+                  position: "relative",
+                }}
+              >
+                {l}
+
+                {/* underline */}
+                <span
+                  style={{
+                    position: "absolute",
+                    bottom: -4,
+                    left: 0,
+                    height: 2,
+                    width: active === l ? "100%" : "0%",
+                    background: "linear-gradient(90deg,#4F8CFF,#8B5CF6)",
+                    transition: "0.25s",
+                  }}
+                />
+              </button>
             ))}
           </div>
 
-          {/* Actions */}
+          {/* ACTIONS */}
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <button className="hide-mobile btnp"onClick={() => window.open("/Shinde_Gayatri_Resume.pdf", "_blank")}
+            {/* Resume */}
+            <button
+              className="hide-mobile btnp"
+              onClick={() =>
+                window.open("/Shinde_Gayatri_Resume.pdf", "_blank")
+              }
               style={{
-                display: "flex", alignItems: "center", gap: 8,
-                padding: "9px 18px", borderRadius: 10, border: "none",
-                cursor: "pointer", fontFamily: "'Inter',sans-serif", fontWeight: 600, fontSize: 13, color: "#fff"
-              }}>
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "9px 16px",
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                color: "#fff",
+                fontWeight: 600,
+                fontSize: 13,
+              }}
+            >
               <Download size={14} />
-              <span>Resume</span>
+              Resume
             </button>
-            <button onClick={() => setIsDark(!isDark)}
+
+            {/* Theme */}
+            <button
+              onClick={() => setIsDark(!isDark)}
               style={{
-                width: 38, height: 38, borderRadius: 10, border: "none", cursor: "pointer",
-                background: isDark ? "rgba(255,255,255,.07)" : "rgba(0,0,0,.05)",
-                color: textColor, display: "flex", alignItems: "center", justifyContent: "center",
-                transition: "all .2s ease"
-              }}>
+                width: 38,
+                height: 38,
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                background: isDark
+                  ? "rgba(255,255,255,.08)"
+                  : "rgba(0,0,0,.06)",
+                color: textColor,
+              }}
+            >
               {isDark ? <Sun size={16} /> : <Moon size={16} />}
             </button>
-            <button onClick={() => setMenuOpen(!menuOpen)}
+
+            {/* Mobile menu */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
               style={{
-                width: 38, height: 38, borderRadius: 10, border: "none",
-                cursor: "pointer", background: isDark ? "rgba(255,255,255,.07)" : "rgba(0,0,0,.05)",
-                color: textColor, alignItems: "center", justifyContent: "center",
-                display: "flex"
-              }}>
+                width: 38,
+                height: 38,
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                color: textColor,
+              }}
+            >
               {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Mobile drawer */}
+      {/* MOBILE MENU */}
       {menuOpen && (
-        <div style={{
-          position: "fixed", top: 70, left: 0, right: 0, zIndex: 999,
-          background: isDark ? "rgba(9,9,11,.97)" : "rgba(248,250,252,.97)",
-          backdropFilter: "blur(20px)", borderBottom: `1px solid ${borderColor}`,
-          padding: "20px 24px 24px"
-        }}>
-          {NAV_LINKS.map(l => (
-            <button key={l} onClick={() => scrollTo(l.toLowerCase())}
+        <div
+          style={{
+            position: "fixed",
+            top: 70,
+            left: 0,
+            right: 0,
+            zIndex: 999,
+            background: isDark
+              ? "rgba(9,9,11,.97)"
+              : "rgba(248,250,252,.97)",
+            backdropFilter: "blur(20px)",
+            padding: 20,
+          }}
+        >
+          {NAV_LINKS.map((l) => (
+            <button
+              key={l}
+              onClick={() => scrollTo(l.toLowerCase())}
               style={{
-                display: "block", width: "100%", textAlign: "left",
-                background: "none", border: "none", cursor: "pointer",
-                fontFamily: "'Inter',sans-serif", fontWeight: 500, fontSize: 15,
-                color: active === l ? "#4F8CFF" : (isDark ? "rgba(241,245,249,.8)" : "rgba(15,23,42,.8)"),
-                padding: "12px 0", borderBottom: `1px solid ${isDark ? "rgba(255,255,255,.05)" : "rgba(0,0,0,.04)"}`
-              }}>{l}</button>
+                display: "block",
+                width: "100%",
+                padding: "12px 0",
+                border: "none",
+                background: "none",
+                textAlign: "left",
+                fontSize: 15,
+                color: active === l ? "#4F8CFF" : textColor,
+              }}
+            >
+              {l}
+            </button>
           ))}
-          <button className="btnp" onClick={() => window.open("/Shinde_Gayatri_Resume.pdf", "_blank")}
-            style={{
-              display: "flex", alignItems: "center", gap: 8, marginTop: 16,
-              padding: "11px 24px", borderRadius: 10, border: "none", cursor: "pointer",
-              fontFamily: "'Inter',sans-serif", fontWeight: 600, fontSize: 13, color: "#fff", width: "100%", justifyContent: "center"
-            }}>
-            <Download size={14} /><span>Download Resume</span>
-          </button>
         </div>
       )}
     </>
   );
 }
-
 // ─── Hero Illustration ───────────────────────────────────────────────────────
 function HeroIllustration() {
   return (
